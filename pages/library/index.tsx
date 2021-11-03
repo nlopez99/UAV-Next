@@ -1,9 +1,9 @@
 import { GetStaticProps, NextPage } from "next";
-import { reorderTVAndMovieLists } from "../../utils/helpers";
-import { Movie } from "../../types/movie";
-import { TVSeries } from "../../types/tv";
-import { Navbar } from "../../components/Navbar";
-import { ContentCard } from "../../components/ContentCard";
+import { reorderTVAndMovieLists } from "utils/helpers";
+import { Movie } from "types/movie";
+import { TVSeries } from "types/tv";
+import { Navbar } from "components/Navbar";
+import { ContentCard } from "components/ContentCard";
 import axios from "axios";
 
 const Library: NextPage<LibraryProps> = ({ library }) => {
@@ -23,6 +23,11 @@ const Library: NextPage<LibraryProps> = ({ library }) => {
     )
     }
 
+
+interface LibraryProps {
+    library: Array<Movie|TVSeries>;
+}
+
 export const getStaticProps: GetStaticProps = async () => {
     const movieResponse = await axios.get('http://localhost:5000/movie/library');
     const tvResponse = await axios.get('http://localhost:5000/tv/library');
@@ -32,13 +37,9 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
         props: {
             library: mergedResults,
-        }
+        },
+        revalidate: 300,
     }
-}
-
-
-interface LibraryProps {
-    library: Array<Movie|TVSeries>;
 }
 
 export default Library
